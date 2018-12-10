@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': 'zzovlog',
         'USER': 'zzoPark',
         'PASSWORD': 'skdh0958',
-        'HOST': '127.0.0.1',
+        'HOST': '54.89.61.221',
         'PORT': '3306',
     }
 }
