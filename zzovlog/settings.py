@@ -25,7 +25,12 @@ SECRET_KEY = 'qf0f18ekg1hgxx50922j=v@sz#+sf6_5hz1_$3!+id=os0(^1_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '54.89.61.221',
+    'zzodb',
+]
 
 
 # Application definition
@@ -81,9 +86,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'zzovlog',
-        'USER': 'zzoPark',
+        'USER': 'zzovlog',
         'PASSWORD': 'skdh0958',
-        'HOST': '54.89.61.221',
+        'HOST': 'zzodb',
         'PORT': '3306',
     }
 }
