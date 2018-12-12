@@ -4,26 +4,30 @@ from blog.models import Tag, Post
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+
+    posts = serializers.PrimaryKeyRelatedField(many=True, queryset=Post.objects.all())
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'groups')
+        fields = ('id', 'username', 'email', 'groups', 'posts')
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
-        fields = ('url', 'name')
+        fields = ('id', 'name')
 
 
 class TagSerializer(serializers.ModelSerializer):
-    posts = serializers.PrimaryKeyRelatedField(many=True, queryset=Post.objects.all())
+    posts = serializers.PrimaryKeyRelatedField(many=True, queryset=Post.objects.all(), required=False)
 
     class Meta:
         model = Tag
-        fields = ('name', 'posts')
+        fields = ('id', 'name', 'posts')
 
 
 class PostSerializer(serializers.ModelSerializer):
+    writer = serializers.ReadOnlyField(source='writer.username')
     class Meta:
         model = Post
-        fields = ('title', 'contents', 'write_date', 'update_date', 'tags')
+        fields = ('id', 'title', 'contents', 'write_date', 'update_date', 'writer', 'tags')
+        extra_kwargs = { 'tags': { 'required': False } }

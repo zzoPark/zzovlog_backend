@@ -19,12 +19,13 @@ from blog import views
 
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'tags', views.TagViewSet)
 router.register(r'posts', views.PostViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    url(r'^', include('blog.urls')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
+
+urlpatterns += router.urls

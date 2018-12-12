@@ -10,4 +10,5 @@ class Post(models.Model):
     contents = models.TextField()
     write_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    tags = models.ManyToManyField(Tag, related_name='posts')
+    writer = models.ForeignKey('auth.User', related_name='posts', on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
