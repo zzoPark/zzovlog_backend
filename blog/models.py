@@ -12,3 +12,7 @@ class Post(models.Model):
     update_date = models.DateTimeField(auto_now=True)
     writer = models.ForeignKey('auth.User', related_name='posts', on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
+
+
+class Menu(models.Model):
+    tag = models.OneToOneField(Tag, on_delete=models.CASCADE)
