@@ -1,2 +1,4 @@
+__pycache__/
 */**/__pycache__/*
-*/**/settings.py
+*.pyc
+zzovlog/settings.py
