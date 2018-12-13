@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, filters
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,19 +9,19 @@ from blog.serializers import UserSerializer, GroupSerializer, TagSerializer, Pos
 
 
 class UserList(generics.ListAPIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
 
 
 class UserDetail(generics.RetrieveAPIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
@@ -34,17 +34,21 @@ class TagViewSet(viewsets.ModelViewSet):
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('title', 'contents',)
 
     def perform_create(self, serializer):
         serializer.save(writer=self.request.user)
 
 
-class TaggedList(APIView):
-    def get(self, request, tagname):
+class TaggedList(generics.ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        tagname = self.kwargs['tagname']
         tag = Tag.objects.get(name=tagname)
         posts = Post.objects.filter(id__in=tag.posts.all())
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
+        return posts
 
 
 class MenuList(APIView):
