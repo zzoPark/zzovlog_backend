@@ -2,7 +2,8 @@ from django.db import models
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, primary_key=True)
+    last_used = models.DateTimeField(auto_now=True)
 
 
 class Post(models.Model):
@@ -16,3 +17,4 @@ class Post(models.Model):
 
 class Menu(models.Model):
     tag = models.OneToOneField(Tag, on_delete=models.CASCADE)
+    order = models.IntegerField(default=0)
