@@ -7,6 +7,10 @@ from rest_framework.response import Response
 from blog.models import Tag, Post, Menu
 from blog.serializers import UserSerializer, GroupSerializer, TagSerializer, PostSerializer, MenuSerializer
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class UserList(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -27,42 +31,61 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class TagViewSet(viewsets.ModelViewSet):
-    queryset = Tag.objects.all()
+    queryset = Tag.objects.all().order_by('last_used')
     serializer_class = TagSerializer
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('-update_date')
     serializer_class = PostSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('title', 'contents',)
+
+    def create(self, request, *args, **kwargs):
+        post = request.data
+        tagnames = []
+        for name in post['tags'].split(','):
+            if not name.strip(): continue
+            tag, created = Tag.objects.update_or_create(name=name)
+            tagnames.append(tag.name)
+        post['tags'] = tagnames
+        serializer = self.get_serializer(data=post)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save(writer=self.request.user)
 
 
 class TaggedList(generics.ListAPIView):
+    queryset = Post.objects.all().order_by('-update_date')
     serializer_class = PostSerializer
 
     def get_queryset(self):
         tagname = self.kwargs['tagname']
         tag = Tag.objects.get(name=tagname)
-        posts = Post.objects.filter(id__in=tag.posts.all())
+        posts = self.queryset.filter(id__in=tag.posts.all())
         return posts
 
 
-class MenuList(APIView):
-    def get(self, request, format=None):
-        menus = Tag.objects.filter(id__in=Menu.objects.all().values('tag'))
-        serializer = TagSerializer(menus, many=True)
-        return Response(serializer.data)
-    
-    def post(self, request, format=None):
-        serializer = MenuSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class MenuList(generics.ListCreateAPIView):
+    queryset = Menu.objects.all().order_by('order')
+    serializer_class = MenuSerializer
+
+    def create(self, request, *args, **kwargs):
+        menus = request.data
+        logger.info(menus)
+        Menu.objects.all().delete()
+        for menu in menus:
+            logger.info(menu)
+            serializer = self.get_serializer(data=menu)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 class MenuDetail(generics.RetrieveUpdateDestroyAPIView):

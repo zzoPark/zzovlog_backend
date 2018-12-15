@@ -7,6 +7,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     posts = serializers.PrimaryKeyRelatedField(many=True, queryset=Post.objects.all())
     class Meta:
         model = User
+        ordering = ['id']
         fields = ('id', 'username', 'email', 'groups', 'posts')
 
 
@@ -20,7 +21,7 @@ class TagSerializer(serializers.ModelSerializer):
     posts = serializers.PrimaryKeyRelatedField(many=True, queryset=Post.objects.all(), required=False)
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'posts')
+        fields = ('name', 'posts')
 
 
 class PostSerializer(serializers.ModelSerializer):
