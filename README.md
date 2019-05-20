@@ -5,6 +5,7 @@ The backend of zzovlog
 - CORS error 해결을 위해 [django-cors-headers](https://github.com/ottoyiu/django-cors-headers)도 이용함
 - Apache + mod_wsgi
 ### 참고
+- [python - Docker Hub](https://hub.docker.com/_/python?tab=description)
 - [httpd - Docker Hub](https://hub.docker.com/_/httpd)
 - [pip install mod_wsgi](https://pypi.org/project/mod_wsgi/)
 - [How to use Django with Apache and mod_wsgi](https://docs.djangoproject.com/en/2.2/howto/deployment/wsgi/modwsgi/)
