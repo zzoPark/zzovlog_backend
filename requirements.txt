@@ -2,3 +2,4 @@ mod_wsgi
 django
 djangorestframework
 django-cors-headers
+mysqlclient
