@@ -20,6 +20,8 @@ ZZOVLOG_DB_PORT
 ```
 ## Dockerfile
 httpd(apache) 이미지 위에 python이랑 mod_wsgi 설치하려고 했는데 httpd:latest 이미지에서 apt-get으로 python3.5 이상 설치가 안되고 gcc 등 python이 제대로 동작하기 위해 필요한 환경 설치하는데만 한세월 걸릴 것 같아서 python 이미지 기반으로 변경함. 요 위에다 apache, mod_wsgi 깔고 돌리는 게 훨씬 쉬울듯.
+## docker-entrypoint.sh
+Docker container가 실행(run)될 때 Dockerfile의 ENTRYPOINT, CMD 명령어 부분이 실행되는데 ENTRYPOINT에서 실행하고 싶은 명령어를 모아놓은 shell script file의 컨벤션 이름이 docker-entrypoint.sh.
 ## 참고
 - [python - Docker Hub](https://hub.docker.com/_/python?tab=description)
 - [httpd - Docker Hub](https://hub.docker.com/_/httpd)
