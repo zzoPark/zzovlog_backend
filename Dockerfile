@@ -3,8 +3,8 @@ FROM python:latest
 RUN apt-get update
 RUN apt-get install -y apache2 apache2-dev
 
-COPY . /srv/zzovlog/
 WORKDIR /srv/zzovlog
+COPY . .
 RUN pip install -r requirements.txt
 RUN chmod +x docker-entrypoint.sh
 ENTRYPOINT ["/srv/zzovlog/docker-entrypoint.sh"]
